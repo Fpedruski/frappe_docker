@@ -1,23 +1,10 @@
-# Use the official Frappe base image
-FROM frappe/erpnext-worker:latest
+FROM frappe/erpnext-nginx:v14.0.0
 
-# Set environment variables (customize these as needed)
-ENV FRAPPE_ENV production
-ENV SITE_NAME your-site-name
-ENV DB_HOST your-database-host
-ENV DB_PORT 3306
-ENV DB_USER your-database-user
-ENV DB_PASSWORD your-database-password
-ENV REDIS_CACHE your-redis-cache-host
-ENV REDIS_QUEUE your-redis-queue-host
-ENV REDIS_SOCKETIO your-redis-socketio-host
-ENV HOSTNAME your-hostname
+COPY --chown=frappe:frappe apps/erpnext /home/frappe/frappe-bench/apps/erpnext
+COPY --chown=frappe:frappe sites /home/frappe/frappe-bench/sites
 
-# Copy your application files (if needed)
-# COPY ./path/to/your/app /home/frappe/frappe-bench/apps/your-app
+USER frappe
 
-# Install any additional dependencies (if needed)
-# RUN apt-get update && apt-get install -y your-dependencies
+WORKDIR /home/frappe/frappe-bench
 
-# Start the ERPNext application
-CMD ["frappe", "start"]
+RUN bench build
